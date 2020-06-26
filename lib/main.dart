@@ -32,14 +32,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<String> users = [];
   //List<Order> orders = [];
-
+  bool _smallDevice = false;
   int _counter = 0;
   FirebaseUser _user;
 
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final databaseReference = Firestore.instance;
-
+  var _textController = TextEditingController(text: "Write here");
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -65,20 +65,20 @@ class _MyHomePageState extends State<MyHomePage> {
         (await _auth.signInWithCredential(credential)).user;
     print("signed in " + user.displayName);
 
-    databaseReference.collection('users').snapshots().listen((event) {
+    databaseReference.collection('chat').snapshots().listen((event) {
       print("GOT RESPONSE FROM DATABASE ${event.runtimeType}");
       users.clear();
       event.documents.forEach((element) {
-        users.add("${element['name']}");
+        users.add("${element['message']}");
       });
       setState(() {
-        users = users.toSet().toList(); //. LOL
+        users = users.toSet().toList();
       });
     });
 
     setState(() {
       _user = user;
-      _counter = 1000;
+     // _counter = 1000;
     });
   }
 
